@@ -62,55 +62,6 @@
     document.documentElement.classList.add('has-js');
   }
 
-  // Copy the email address, with honest feedback when copying is blocked.
-  document.querySelectorAll('[data-copy-email]').forEach((button) => {
-    const status = document.getElementById(button.getAttribute('aria-describedby'));
-    const address = document.getElementById(button.dataset.emailTarget);
-    button.addEventListener('click', async () => {
-      button.disabled = true;
-      if (status) {
-        status.textContent = 'Copying email address…';
-      }
-
-      try {
-        if (!navigator.clipboard?.writeText) {
-          throw new Error('Clipboard unavailable');
-        }
-
-        await navigator.clipboard.writeText(button.dataset.copyEmail);
-
-        if (status) {
-          status.textContent =
-            'Email address copied. Paste it into your preferred email service.';
-        }
-      } catch {
-        let selected = false;
-
-        try {
-          if (address) {
-            const range = document.createRange();
-            range.selectNodeContents(address);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            selected = selection.toString() === button.dataset.copyEmail;
-          }
-        } catch {
-          // The address remains visible for manual copying.
-        }
-
-        if (status) {
-          status.textContent = selected
-            ? 'Automatic copying was blocked. The address is selected; copy it using your device’s copy command.'
-            : 'Automatic copying was blocked. Select and copy the email address above, or choose Write in Gmail.';
-        }
-      } finally {
-        button.disabled = false;
-      }
-    });
-    button.hidden = false;
-  });
-
   // Optional section animations and reduced-motion preferences.
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const running = new Set();
@@ -130,6 +81,8 @@
 
     observer = new IntersectionObserver(
       (entries) => {
+        let order = 0;
+
         for (const entry of entries) {
           if (!entry.isIntersecting) {
             continue;
@@ -140,12 +93,18 @@
           // Content stays visible if animations are unavailable.
           const animation = entry.target.animate(
             [
-              { opacity: 0, transform: 'translateY(10px)' },
+              { opacity: 0, transform: 'translateY(22px)' },
               { opacity: 1, transform: 'translateY(0)' },
             ],
-            { duration: 420, easing: 'cubic-bezier(.2,.65,.3,1)' },
+            {
+              duration: 650,
+              delay: Math.min(order, 3) * 90,
+              easing: 'cubic-bezier(.2,.65,.3,1)',
+              fill: 'backwards',
+            },
           );
 
+          order += 1;
           running.add(animation);
           animation.finished.then(
             () => running.delete(animation),
@@ -153,12 +112,12 @@
           );
         }
       },
-      { threshold: 0.08 },
+      { threshold: 0.12, rootMargin: '0px 0px -24px 0px' },
     );
 
     document
       .querySelectorAll(
-        '.hero > div, .hero-aside, .page-heading, .project, .prose-section, ' +
+        '.project, .prose-section, ' +
           '.contact-list, .contact-aside, .contact-strip',
       )
       .forEach((element) => observer.observe(element));

@@ -1171,11 +1171,6 @@ a:hover {
   cursor: pointer;
 }
 
-.button:disabled {
-  cursor: wait;
-  opacity: .7;
-}
-
 .button.secondary {
   background: var(--paper);
 }
@@ -1191,21 +1186,10 @@ a:hover {
   font-size: 12px;
 }
 
-.contact-aside .contact-actions .copy-button {
-  width: 100%;
-}
-
 .contact-aside .contact-help {
   font-size: 12px;
   line-height: 1.65;
   margin-top: 17px;
-}
-
-.contact-aside .copy-feedback {
-  font-size: 12px;
-  line-height: 1.65;
-  min-height: 3.3em;
-  margin: 14px 0 0;
 }
 
 .contact-list .email-address {
@@ -1359,10 +1343,6 @@ a:hover {
   .footer-links {
     gap: 14px;
   }
-
-  .contact-aside .contact-actions .copy-button {
-    flex-basis: 100%;
-  }
 }
 
 @media (max-width: 360px) {
@@ -1395,5 +1375,65 @@ a:hover {
 
   .project:hover, .button:active, .menu-toggle:active {
     transform: none;
+  }
+}
+
+/* Page entrances work independently of the optional interaction script. */
+.contact-aside .contact-actions .button {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+@keyframes portfolio-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero .focus-badge, .hero .eyebrow, .hero h1, .hero .intro, .hero .actions, .hero-aside, .page-heading > * {
+    animation: portfolio-enter 780ms cubic-bezier(.2, .65, .3, 1) both;
+  }
+
+  .hero .focus-badge {
+    animation-delay: 40ms;
+  }
+
+  .hero .eyebrow {
+    animation-delay: 120ms;
+  }
+
+  .hero h1 {
+    animation-delay: 200ms;
+  }
+
+  .hero .intro {
+    animation-delay: 300ms;
+  }
+
+  .hero .actions {
+    animation-delay: 400ms;
+  }
+
+  .hero-aside {
+    animation-delay: 260ms;
+  }
+
+  .page-heading > :nth-child(2) {
+    animation-delay: 100ms;
+  }
+
+  .page-heading > :nth-child(3) {
+    animation-delay: 200ms;
+  }
+
+  .page-heading > :nth-child(n + 4) {
+    animation-delay: 300ms;
   }
 }
